@@ -1,10 +1,10 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include "chess.h"
 
-#define SQ_SIZE 80
+#define SQ_SIZE 60
 #define DIMENSION 8
-#define MAX_FPS 15
-typedef unsigned long long U64;
+#define MAX_FPS 60
 #define set_bit(b, i) ((b) |= (1ULL << i))
 #define get_bit(b, i) ((b) & (1ULL << i))
 #define clear_bit(b, i) ((b) &= ~(1ULL << i))
@@ -12,54 +12,7 @@ typedef unsigned long long U64;
 
 using namespace std;
 
-class BitBoard
-{
-public:
-    U64 boards[12];
-    U64 *white_pawns;
-    U64 *white_knights;
-    U64 *white_bishops;
-    U64 *white_rooks;
-    U64 *white_queens;
-    U64 *white_king;
-    U64 *black_pawns;
-    U64 *black_knights;
-    U64 *black_bishops;
-    U64 *black_rooks;
-    U64 *black_queens;
-    U64 *black_king;
-
-    BitBoard()
-    {
-        white_pawns = &boards[0];
-        white_knights = &boards[1];
-        white_bishops = &boards[2];
-        white_rooks = &boards[3];
-        white_queens = &boards[4];
-        white_king = &boards[5];
-        black_pawns = &boards[6];
-        black_knights = &boards[7];
-        black_bishops = &boards[8];
-        black_rooks = &boards[9];
-        black_queens = &boards[10];
-        black_king = &boards[11];
-
-        *white_pawns = 0xff00;
-        *white_knights = 0x42;
-        *white_bishops = 0x24;
-        *white_rooks = 0x81;
-        *white_queens = 0x8;
-        *white_king = 0x10;
-        *black_pawns = 0xff000000000000;
-        *black_knights = 0x4200000000000000;
-        *black_bishops = 0x2400000000000000;
-        *black_rooks = 0x8100000000000000;
-        *black_queens = 0x800000000000000;
-        *black_king = 0x1000000000000000;
-    }
-};
-
-int init(SDL_Window **window, SDL_Surface **surface)
+int init(SDL_Window **window, SDL_Surface **surface, unsigned long *time)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -67,6 +20,7 @@ int init(SDL_Window **window, SDL_Surface **surface)
         SDL_Quit();
         return -1;
     }
+    *time = SDL_GetTicks();
     *window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SQ_SIZE * DIMENSION, SQ_SIZE * DIMENSION, SDL_WINDOW_SHOWN);
     if (*window == NULL)
     {
@@ -77,7 +31,7 @@ int init(SDL_Window **window, SDL_Surface **surface)
     return 0;
 }
 
-int loadBoard(SDL_Window **window, SDL_Surface **surface)
+int drawBoard(SDL_Window **window, SDL_Surface **surface)
 {
     for (int i = 0; i < DIMENSION; ++i)
     {
@@ -103,6 +57,23 @@ int loadPieces(SDL_Window **window, SDL_Surface **surface, BitBoard *bitboard)
     string piece_path[] = {"wp", "wn", "wb", "wr", "wq", "wk", "bp", "bn", "bb", "br", "bq", "bk"};
     for (int i = 0; i < 12; ++i)
     {
+        string path = "Image/" + piece_path[i] + ".bmp";
+        SDL_Surface *piece = SDL_LoadBMP(path.c_str());
+        if (piece == NULL)
+        {
+            printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+            return -1;
+        }
+        bitboard->image_map[piece_path[i]] = piece;
+    }
+    return 0;
+}
+
+int drawPieces(SDL_Window **window, SDL_Surface **surface, BitBoard *bitboard)
+{
+    string piece_path[] = {"wp", "wn", "wb", "wr", "wq", "wk", "bp", "bn", "bb", "br", "bq", "bk"};
+    for (int i = 0; i < 12; ++i)
+    {
         U64 board = bitboard->boards[i];
         for (int j = 0; j < DIMENSION; ++j)
         {
@@ -110,35 +81,38 @@ int loadPieces(SDL_Window **window, SDL_Surface **surface, BitBoard *bitboard)
             {
                 if (get_bit(board, (j * DIMENSION + k)) >> (j * DIMENSION + k) == 1)
                 {
-                    SDL_Rect rect = {k * SQ_SIZE, j * SQ_SIZE, SQ_SIZE, SQ_SIZE};
-                    string path = "Image/" + piece_path[i] + ".bmp";
-                    cout << path << endl;
-                    SDL_Surface *piece = SDL_LoadBMP(path.c_str());
-                    if (piece == NULL)
-                    {
-                        printf("Unable to load image %s! SDL Error: %s\n", &path, SDL_GetError());
-                        return -1;
-                    }
-                    SDL_BlitSurface(piece, NULL, *surface, &rect);
-                    SDL_UpdateWindowSurface(*window);
+                    SDL_Rect rect = {k * SQ_SIZE, (DIMENSION - 1 - j) * SQ_SIZE, SQ_SIZE, SQ_SIZE};
+                    SDL_BlitSurface(bitboard->image_map[piece_path[i]], NULL, *surface, &rect);
                 }
             }
         }
     }
+    SDL_UpdateWindowSurface(*window);
     return 0;
 }
 
-int runGame()
+int runGame(SDL_Window **window, SDL_Surface **surface, BitBoard *bitBoard, unsigned long *startTime)
 {
+    Game game = Game();
     SDL_Event e;
     bool quit = false;
+    unsigned long time = SDL_GetTicks();
     while (!quit)
     {
         while (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
+            {
                 quit = true;
+            }
         }
+        drawBoard(window, surface);
+        drawPieces(window, surface, bitBoard);
+        while (time - *startTime < 1000 / MAX_FPS)
+        {
+            time = SDL_GetTicks();
+        }
+        *startTime = time;
     }
     return 0;
 }
@@ -156,10 +130,11 @@ int main(int argc, char *argv[])
     SDL_Surface *surface = nullptr;
     SDL_Rect **board = nullptr;
     BitBoard *bitBoard = new BitBoard();
-    init(&window, &surface);
-    loadBoard(&window, &surface);
+    unsigned long time;
+    init(&window, &surface, &time);
+    drawBoard(&window, &surface);
     loadPieces(&window, &surface, bitBoard);
-    runGame();
+    runGame(&window, &surface, bitBoard, &time);
     close(window);
     return 0;
 }
