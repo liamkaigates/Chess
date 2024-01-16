@@ -4,6 +4,21 @@ using namespace std;
 
 typedef unsigned long long U64;
 
+void updatePieceMap(map<int, string> *piece_map)
+{
+    (*piece_map)[0] = "wp";
+    (*piece_map)[1] = "wn";
+    (*piece_map)[2] = "wb";
+    (*piece_map)[3] = "wr";
+    (*piece_map)[4] = "wq";
+    (*piece_map)[5] = "wk";
+    (*piece_map)[6] = "bp";
+    (*piece_map)[7] = "bn";
+    (*piece_map)[8] = "bb";
+    (*piece_map)[9] = "br";
+    (*piece_map)[10] = "bq";
+    (*piece_map)[11] = "bk";
+}
 class BitBoard
 {
 public:
@@ -20,6 +35,7 @@ public:
     U64 *black_rooks;
     U64 *black_queens;
     U64 *black_king;
+    map<int, string> piece_map;
     map<string, SDL_Surface *> image_map;
     BitBoard()
     {
@@ -48,6 +64,8 @@ public:
         *black_rooks = 0x8100000000000000;
         *black_queens = 0x800000000000000;
         *black_king = 0x1000000000000000;
+
+        updatePieceMap(&piece_map);
     }
 };
 
@@ -55,10 +73,10 @@ struct Move
 {
     char piece;
     char color;
-    char start_file;
-    char start_rank;
-    char end_file;
-    char end_rank;
+    int start_file;
+    int start_rank;
+    int end_file;
+    int end_rank;
 };
 
 class Game
@@ -69,4 +87,8 @@ public:
     bool white_castle;
     bool black_castle;
     vector<Move> moves;
+    void add_move(Move move)
+    {
+        moves.push_back(move);
+    }
 };
