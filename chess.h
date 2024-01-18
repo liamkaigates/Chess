@@ -3,22 +3,6 @@
 using namespace std;
 
 typedef unsigned long long U64;
-
-void updatePieceMap(map<int, string> *piece_map)
-{
-    (*piece_map)[0] = "wp";
-    (*piece_map)[1] = "wn";
-    (*piece_map)[2] = "wb";
-    (*piece_map)[3] = "wr";
-    (*piece_map)[4] = "wq";
-    (*piece_map)[5] = "wk";
-    (*piece_map)[6] = "bp";
-    (*piece_map)[7] = "bn";
-    (*piece_map)[8] = "bb";
-    (*piece_map)[9] = "br";
-    (*piece_map)[10] = "bq";
-    (*piece_map)[11] = "bk";
-}
 class BitBoard
 {
 public:
@@ -65,7 +49,18 @@ public:
         *black_queens = 0x800000000000000;
         *black_king = 0x1000000000000000;
 
-        updatePieceMap(&piece_map);
+        piece_map[0] = "wp";
+        piece_map[1] = "wn";
+        piece_map[2] = "wb";
+        piece_map[3] = "wr";
+        piece_map[4] = "wq";
+        piece_map[5] = "wk";
+        piece_map[6] = "bp";
+        piece_map[7] = "bn";
+        piece_map[8] = "bb";
+        piece_map[9] = "br";
+        piece_map[10] = "bq";
+        piece_map[11] = "bk";
     }
 };
 
@@ -83,12 +78,14 @@ class Game
 {
 public:
     BitBoard board;
-    bool whiteTurn;
-    bool white_castle;
-    bool black_castle;
+    bool whiteTurn = true;
+    bool white_castle = true;
+    bool black_castle = true;
     vector<Move> moves;
-    void add_move(Move move)
-    {
-        moves.push_back(move);
-    }
+    void add_move(Move move);
+    void make_move(vector<pair<int, int>> clicks);
+    void print_board(U64 board);
+    void print_main_board();
+    void clear_boards(int bit);
+    void undo_move();
 };

@@ -91,74 +91,11 @@ int drawPieces(SDL_Window **window, SDL_Surface **surface, BitBoard *bitboard)
     return 0;
 }
 
-void print_board(U64 board)
-{
-    printf("Board\n");
-    for (int row = 0; row < DIMENSION; row++)
-    {
-        for (int col = 0; col < DIMENSION; col++)
-        {
-            int index = row * DIMENSION + col;
-            if (get_bit(board, index) != 0)
-            {
-                printf("1 ");
-            }
-            else
-            {
-                printf("0 ");
-            }
-        }
-        printf("\n");
-    }
-}
-
-void print_main_board(BitBoard &bitBoard)
-{
-
-    for (int i = 0; i < 12; ++i)
-    {
-        cout << bitBoard.piece_map[i] << endl;
-        print_board(bitBoard.boards[i]);
-    }
-}
-
-void clear_boards(BitBoard *bitBoard, int bit)
-{
-    for (int i = 0; i < 12; ++i)
-    {
-        clear_bit(bitBoard->boards[i], bit);
-        cout << get_bit(bitBoard->boards[i], bit) << endl;
-    }
-}
-
-void update_board(Game *game, BitBoard *bitBoard, vector<pair<int, int>> clicks)
-{
-    int boardSquare = (DIMENSION - 1 - clicks[0].first) * DIMENSION + clicks[0].second;
-    for (int i = 0; i < 12; ++i)
-    {
-        U64 &board = bitBoard->boards[i];
-        if (get_bit(board, boardSquare) == 1)
-        {
-            clear_bit(board, boardSquare);
-            clear_boards(bitBoard, ((DIMENSION - 1 - clicks[1].first) * DIMENSION + clicks[1].second));
-            set_bit(board, ((DIMENSION - 1 - clicks[1].first) * DIMENSION + clicks[1].second));
-            print_main_board(*bitBoard);
-            Move move = {
-                bitBoard->piece_map[i][1],
-                bitBoard->piece_map[i][0],
-                (DIMENSION - 1 - clicks[0].first),
-                clicks[0].second,
-                (DIMENSION - 1 - clicks[1].first),
-                clicks[1].second};
-            game->add_move(move);
-            break;
-        }
-    }
-}
-
-int runGame(SDL_Window **window, SDL_Surface **surface, BitBoard *bitBoard, unsigned long *startTime)
+int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime)
 {
     Game game = Game();
+    game.board = BitBoard();
+    loadPieces(window, surface, &(game.board));
     SDL_Event e;
     bool quit = false;
     bool checkMate = true;
@@ -191,14 +128,22 @@ int runGame(SDL_Window **window, SDL_Surface **surface, BitBoard *bitBoard, unsi
                 }
                 if (clicks.size() == 2)
                 {
-                    update_board(&game, bitBoard, clicks);
+                    game.make_move(clicks);
                     clicks.clear();
                     square = std::make_pair(-1, -1);
                 }
             }
+            else if (e.type == SDL_KEYDOWN)
+            {
+                SDL_Keycode keyCode = e.key.keysym.sym;
+                if (keyCode == SDLK_z)
+                {
+                    game.undo_move();
+                }
+            }
         }
         drawBoard(window, surface);
-        drawPieces(window, surface, bitBoard);
+        drawPieces(window, surface, &(game.board));
         while (time - *startTime < 1000 / MAX_FPS)
         {
             time = SDL_GetTicks();
@@ -220,12 +165,10 @@ int main(int argc, char *argv[])
     SDL_Window *window = nullptr;
     SDL_Surface *surface = nullptr;
     SDL_Rect **board = nullptr;
-    BitBoard *bitBoard = new BitBoard();
     unsigned long time;
     init(&window, &surface, &time);
     drawBoard(&window, &surface);
-    loadPieces(&window, &surface, bitBoard);
-    runGame(&window, &surface, bitBoard, &time);
+    runGame(&window, &surface, &time);
     close(window);
     return 0;
 }
