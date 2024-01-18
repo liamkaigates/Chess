@@ -64,14 +64,27 @@ public:
     }
 };
 
-struct Move
+class Move
 {
+public:
     char piece;
     char color;
     int start_file;
     int start_rank;
     int end_file;
     int end_rank;
+
+    // Define the equality operator
+    bool operator==(const Move &other) const
+    {
+        // Compare the attributes of the moves
+        return piece == other.piece &&
+               color == other.color &&
+               start_file == other.start_file &&
+               start_rank == other.start_rank &&
+               end_file == other.end_file &&
+               end_rank == other.end_rank;
+    }
 };
 
 class Game
@@ -83,9 +96,14 @@ public:
     bool black_castle = true;
     vector<Move> moves;
     void add_move(Move move);
-    void make_move(vector<pair<int, int>> clicks);
+    void make_move(Move move);
     void print_board(U64 board);
     void print_main_board();
     void clear_boards(int bit);
     void undo_move();
+    bool is_empty_square(int i, int bit);
+    Move get_move(vector<pair<int, int>> clicks);
+    vector<Move> get_pawn_moves(int i, int j);
+    vector<Move> get_all_moves();
+    vector<Move> get_valid_moves();
 };

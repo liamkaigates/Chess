@@ -91,9 +91,40 @@ int drawPieces(SDL_Window **window, SDL_Surface **surface, BitBoard *bitboard)
     return 0;
 }
 
+bool search_moves(vector<Move> moves, Move move)
+{
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (move == moves[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void print_move(Move move)
+{
+    std::cout << "Piece: " << move.piece
+              << " Color: " << move.color
+              << " Start: (" << move.start_file << ", " << move.start_rank << ")"
+              << " End: (" << move.end_file << ", " << move.end_rank << ")\n";
+}
+
+void print_moves(const std::vector<Move> &moves)
+{
+    cout << moves.size() << " Moves" << endl;
+    for (const auto &move : moves)
+    {
+        print_move(move);
+    }
+}
+
 int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime)
 {
     Game game = Game();
+    vector<Move> valid_moves = game.get_valid_moves();
+    print_moves(valid_moves);
     game.board = BitBoard();
     loadPieces(window, surface, &(game.board));
     SDL_Event e;
@@ -128,7 +159,15 @@ int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime
                 }
                 if (clicks.size() == 2)
                 {
-                    game.make_move(clicks);
+                    print_moves(valid_moves);
+                    Move move = game.get_move(clicks);
+                    print_move(move);
+                    if (search_moves(valid_moves, move))
+                    {
+                        game.make_move(move);
+                        valid_moves = game.get_valid_moves();
+                        print_moves(valid_moves);
+                    }
                     clicks.clear();
                     square = std::make_pair(-1, -1);
                 }
@@ -139,6 +178,8 @@ int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime
                 if (keyCode == SDLK_z)
                 {
                     game.undo_move();
+                    valid_moves = game.get_valid_moves();
+                    print_moves(valid_moves);
                 }
             }
         }
