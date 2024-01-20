@@ -179,9 +179,14 @@ int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime
                         game.make_move(get_move_object(valid_moves, move));
                         valid_moves = game.get_valid_moves();
                         print_moves(valid_moves);
+                        clicks.clear();
+                        square = std::make_pair(-1, -1);
                     }
-                    clicks.clear();
-                    square = std::make_pair(-1, -1);
+                    else
+                    {
+                        clicks.erase(clicks.begin(), clicks.end());
+                        clicks.push_back(square);
+                    }
                 }
             }
             else if (e.type == SDL_KEYDOWN)
