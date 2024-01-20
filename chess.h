@@ -21,6 +21,8 @@ public:
     U64 *black_king;
     map<int, string> piece_map;
     map<string, SDL_Surface *> image_map;
+    U64 get_white_board();
+    U64 get_black_board();
     BitBoard()
     {
         white_pawns = &boards[0];
@@ -73,6 +75,9 @@ public:
     int start_rank;
     int end_file;
     int end_rank;
+    bool capture;
+    char capture_piece;
+    char capture_color;
 
     // Define the equality operator
     bool operator==(const Move &other) const
@@ -103,7 +108,15 @@ public:
     void undo_move();
     bool is_empty_square(int i, int bit);
     Move get_move(vector<pair<int, int>> clicks);
+    char find_captured_piece(int i, int j);
+    Move create_piece_move(char color, char piece, int start_rank, int start_file, int end_rank, int end_file);
+    bool add_piece_move(vector<Move> &moves, Move &move, U64 opposite_board, char capture_color, int board_index);
     vector<Move> get_pawn_moves(int i, int j);
+    vector<Move> get_rook_moves(int i, int j);
+    vector<Move> get_knight_moves(int i, int j);
+    vector<Move> get_bishop_moves(int i, int j);
+    vector<Move> get_queen_moves(int i, int j);
+    vector<Move> get_king_moves(int i, int j);
     vector<Move> get_all_moves();
     vector<Move> get_valid_moves();
 };

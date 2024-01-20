@@ -103,12 +103,24 @@ bool search_moves(vector<Move> moves, Move move)
     return false;
 }
 
+Move get_move_object(vector<Move> moves, Move move)
+{
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (move == moves[i])
+        {
+            return moves[i];
+        }
+    }
+    return move;
+}
+
 void print_move(Move move)
 {
-    std::cout << "Piece: " << move.piece
-              << " Color: " << move.color
-              << " Start: (" << move.start_file << ", " << move.start_rank << ")"
-              << " End: (" << move.end_file << ", " << move.end_rank << ")\n";
+    cout << "Piece: " << move.piece
+         << " Color: " << move.color
+         << " Start: (" << move.start_file << ", " << move.start_rank << ")"
+         << " End: (" << move.end_file << ", " << move.end_rank << ")\n";
 }
 
 void print_moves(const std::vector<Move> &moves)
@@ -159,12 +171,12 @@ int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime
                 }
                 if (clicks.size() == 2)
                 {
-                    print_moves(valid_moves);
                     Move move = game.get_move(clicks);
+                    printf("User Move\n");
                     print_move(move);
                     if (search_moves(valid_moves, move))
                     {
-                        game.make_move(move);
+                        game.make_move(get_move_object(valid_moves, move));
                         valid_moves = game.get_valid_moves();
                         print_moves(valid_moves);
                     }
