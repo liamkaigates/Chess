@@ -1,12 +1,19 @@
+#include <iostream>
+#include <string>
 #include <map>
+#include <SDL2/SDL.h>
 
 using namespace std;
 
 typedef unsigned long long U64;
+
 class BitBoard
 {
 public:
+    // Bitboards for each piece type
     U64 boards[12];
+
+    // Pointers to individual piece bitboards
     U64 *white_pawns;
     U64 *white_knights;
     U64 *white_bishops;
@@ -19,12 +26,22 @@ public:
     U64 *black_rooks;
     U64 *black_queens;
     U64 *black_king;
+
+    // Maps to associate piece names and bitboards
     map<int, string> piece_map;
+    map<string, U64 *> board_map;
     map<string, SDL_Surface *> image_map;
+
+    // Function to get the bitboard for all white pieces
     U64 get_white_board();
+
+    // Function to get the bitboard for all black pieces
     U64 get_black_board();
+
+    // Constructor
     BitBoard()
     {
+        // Initialize the pointers to individual piece bitboards
         white_pawns = &boards[0];
         white_knights = &boards[1];
         white_bishops = &boards[2];
@@ -38,6 +55,7 @@ public:
         black_queens = &boards[10];
         black_king = &boards[11];
 
+        // Initialize the bitboards for each piece type
         *white_pawns = 0xff00;
         *white_knights = 0x42;
         *white_bishops = 0x24;
@@ -51,6 +69,7 @@ public:
         *black_queens = 0x800000000000000;
         *black_king = 0x1000000000000000;
 
+        // Initialize the piece name to bitboard mapping
         piece_map[0] = "wp";
         piece_map[1] = "wn";
         piece_map[2] = "wb";
@@ -63,60 +82,19 @@ public:
         piece_map[9] = "br";
         piece_map[10] = "bq";
         piece_map[11] = "bk";
+
+        // Initialize the piece name to bitboard pointer mapping
+        board_map["wp"] = &boards[0];
+        board_map["wn"] = &boards[1];
+        board_map["wb"] = &boards[2];
+        board_map["wr"] = &boards[3];
+        board_map["wq"] = &boards[4];
+        board_map["wk"] = &boards[5];
+        board_map["bp"] = &boards[6];
+        board_map["bn"] = &boards[7];
+        board_map["bb"] = &boards[8];
+        board_map["br"] = &boards[9];
+        board_map["bq"] = &boards[10];
+        board_map["bk"] = &boards[11];
     }
-};
-
-class Move
-{
-public:
-    char piece;
-    char color;
-    int start_file;
-    int start_rank;
-    int end_file;
-    int end_rank;
-    bool capture;
-    char capture_piece;
-    char capture_color;
-
-    // Define the equality operator
-    bool operator==(const Move &other) const
-    {
-        // Compare the attributes of the moves
-        return piece == other.piece &&
-               color == other.color &&
-               start_file == other.start_file &&
-               start_rank == other.start_rank &&
-               end_file == other.end_file &&
-               end_rank == other.end_rank;
-    }
-};
-
-class Game
-{
-public:
-    BitBoard board;
-    bool whiteTurn = true;
-    bool white_castle = true;
-    bool black_castle = true;
-    vector<Move> moves;
-    void add_move(Move move);
-    void make_move(Move move);
-    void print_board(U64 board);
-    void print_main_board();
-    void clear_boards(int bit);
-    void undo_move();
-    bool is_empty_square(int i, int bit);
-    Move get_move(vector<pair<int, int>> clicks);
-    char find_captured_piece(int i, int j);
-    Move create_piece_move(char color, char piece, int start_rank, int start_file, int end_rank, int end_file);
-    bool add_piece_move(vector<Move> &moves, Move &move, U64 opposite_board, char capture_color, int board_index);
-    vector<Move> get_pawn_moves(int i, int j);
-    vector<Move> get_rook_moves(int i, int j);
-    vector<Move> get_knight_moves(int i, int j);
-    vector<Move> get_bishop_moves(int i, int j);
-    vector<Move> get_queen_moves(int i, int j);
-    vector<Move> get_king_moves(int i, int j);
-    vector<Move> get_all_moves();
-    vector<Move> get_valid_moves();
 };
