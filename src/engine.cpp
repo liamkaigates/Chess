@@ -804,6 +804,5 @@ vector<Move> Game::get_valid_moves()
         this->checkmate = false;
         this->stalemate = false;
     }
-    cout << valid_moves.size() << " Moves" << endl;
     return valid_moves;
 }
