@@ -29,37 +29,30 @@ vector<Move> Game::get_bishop_moves(int i, int j)
 
     // Generate bishop moves based on color
 
-    // Check for valid moves along the diagonal - up right direction
-    for (int file = j + 1, rank = i - 1; file < DIMENSION && rank >= 0; ++file, --rank)
+    // Helper function to check and add diagonal moves
+    auto checkAndAddDiagonalMoves = [&](int rankDirection, int fileDirection)
     {
-        Move bishop_move = this->create_piece_move(color, 'b', i, j, rank, file);
-        if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color, board_index))
-            break;
-    }
+        for (int file = j + fileDirection, rank = i + rankDirection;
+             file >= 0 && file < DIMENSION && rank >= 0 && rank < DIMENSION;
+             file += fileDirection, rank += rankDirection)
+        {
+            Move bishop_move = this->create_piece_move(color, 'b', i, j, rank, file);
+            if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color, board_index))
+                break;
+        }
+    };
+
+    // Check for valid moves along the diagonal - up right direction
+    checkAndAddDiagonalMoves(-1, 1);
 
     // Check for valid moves along the diagonal - up left direction
-    for (int file = j - 1, rank = i - 1; file >= 0 && rank >= 0; --file, --rank)
-    {
-        Move bishop_move = this->create_piece_move(color, 'b', i, j, rank, file);
-        if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color, board_index))
-            break;
-    }
+    checkAndAddDiagonalMoves(-1, -1);
 
     // Check for valid moves along the diagonal - down right direction
-    for (int file = j + 1, rank = i + 1; file < DIMENSION && rank < DIMENSION; ++file, ++rank)
-    {
-        Move bishop_move = this->create_piece_move(color, 'b', i, j, rank, file);
-        if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color, board_index))
-            break;
-    }
+    checkAndAddDiagonalMoves(1, 1);
 
     // Check for valid moves along the diagonal - down left direction
-    for (int file = j - 1, rank = i + 1; file >= 0 && rank < DIMENSION; --file, ++rank)
-    {
-        Move bishop_move = this->create_piece_move(color, 'b', i, j, rank, file);
-        if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color, board_index))
-            break;
-    }
+    checkAndAddDiagonalMoves(1, -1);
 
     return bishop_moves;
 }

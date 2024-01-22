@@ -4,6 +4,12 @@
 // Using the standard namespace
 using namespace std;
 
+// Function to add a move to the list of moves
+void Game::add_move(Move move)
+{
+    (*this).moves.push_back(move);
+}
+
 // Function to find the captured piece
 char Game::find_captured_piece(int i, int j)
 {
@@ -61,6 +67,8 @@ Move Game::get_move(vector<pair<int, int>> clicks)
 // Function to make a move
 void Game::make_move(Move move, bool user)
 {
+    // cout << "Making move" << endl;
+    // this->print_move(move);
     int startSquare = move.start_rank * DIMENSION + move.start_file;
     int endSquare = move.end_rank * DIMENSION + move.end_file;
     for (int i = 0; i < 12; ++i)
@@ -84,6 +92,7 @@ void Game::make_move(Move move, bool user)
             break;
         }
     }
+    // this->print_main_board();
 }
 
 // Function to undo a move
@@ -91,7 +100,9 @@ void Game::undo_move()
 {
     if (!moves.empty())
     {
+        // cout << "Undoing move" << endl;
         Move move = moves.back();
+        // this->print_move(move);
         moves.pop_back();
         int startSquare = move.start_rank * DIMENSION + move.start_file;
         int endSquare = move.end_rank * DIMENSION + move.end_file;
@@ -162,6 +173,7 @@ void Game::undo_move()
             }
         }
     }
+    // this->print_main_board();
 }
 
 // Function to create a move for a piece

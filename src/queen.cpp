@@ -11,6 +11,8 @@ vector<Move> Game::get_queen_moves(int i, int j)
     int board_index;
     U64 opposite_board;
     char capture_color = (this->whiteTurn) ? 'b' : 'w';
+
+    // Set board index and opposite board based on the current turn
     if (this->whiteTurn)
     {
         board_index = 4; // Assuming index 4 represents white queens in the BitBoard class

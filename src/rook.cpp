@@ -11,6 +11,8 @@ vector<Move> Game::get_rook_moves(int i, int j)
     int board_index;
     U64 opposite_board;
     char capture_color = (this->whiteTurn) ? 'b' : 'w';
+
+    // Set board index and opposite board based on the current turn
     if (this->whiteTurn)
     {
         board_index = 3; // Assuming index 3 represents white rooks in the BitBoard class

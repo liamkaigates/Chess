@@ -29,9 +29,11 @@ vector<Move> Game::get_knight_moves(int i, int j)
 
     // Generate knight moves based on color
 
-    // Check for valid moves along the rank - right direction
-    vector<pair<int, int>> knight_squares = {{i - 2, j + 1}, {i - 1, j + 2}, {i + 1, j + 2}, {i + 2, j + 1}, {i + 2, j - 1}, {i + 1, j - 2}, {i - 1, j - 2}, {i - 2, j - 1}};
+    // Define relative positions for knight moves
+    vector<pair<int, int>> knight_squares = {
+        {i - 2, j + 1}, {i - 1, j + 2}, {i + 1, j + 2}, {i + 2, j + 1}, {i + 2, j - 1}, {i + 1, j - 2}, {i - 1, j - 2}, {i - 2, j - 1}};
 
+    // Check for valid moves within the board boundaries
     for (auto square : knight_squares)
     {
         if (square.first >= 0 && square.first < DIMENSION && square.second >= 0 && square.second < DIMENSION)

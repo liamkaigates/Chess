@@ -2,7 +2,7 @@
 _DEPS = bitboard.h game.h move.h engine.h sdl_helper.h
 
 # Define the object files
-_OBJ = engine.o game.o sdl_helper.o
+_OBJ = engine.o game.o sdl_helper.o pawn.o rook.o knight.o bishop.o queen.o king.o move.o board.o
 _MOBJ = main.o
 _TOBJ = test.o
 

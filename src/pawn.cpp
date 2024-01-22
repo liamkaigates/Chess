@@ -8,6 +8,7 @@ using namespace std;
 vector<Move> Game::get_pawn_moves(int i, int j)
 {
     vector<Move> pawn_moves;
+
     int board_index = (this->whiteTurn) ? 0 : 6;
     char color = (this->whiteTurn) ? 'w' : 'b';
     char capture_color = (this->whiteTurn) ? 'b' : 'w';
