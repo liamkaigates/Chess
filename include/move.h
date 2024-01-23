@@ -1,3 +1,6 @@
+#ifndef MOVE_H
+#define MOVE_H
+
 // Move class represents a chess move
 class Move
 {
@@ -25,3 +28,5 @@ public:
                end_rank == other.end_rank;
     }
 };
+
+#endif // MOVE_H

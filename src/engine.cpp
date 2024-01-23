@@ -101,7 +101,6 @@ vector<Move> Game::get_valid_moves()
 {
     vector<Move> all_moves = get_all_moves();
     vector<Move> valid_moves;
-
     // Loop through all moves and check if the move is valid
     for (const Move &move : all_moves)
     {

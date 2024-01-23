@@ -1,3 +1,6 @@
+#ifndef BITBOARD_H
+#define BITBOARD_H
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -98,3 +101,5 @@ public:
         board_map["bk"] = &boards[11];
     }
 };
+
+#endif // BITBOARD_H

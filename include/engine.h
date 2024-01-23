@@ -1,3 +1,5 @@
+#ifndef ENGINE_H
+#define ENGINE_H
 #include <map>
 #include <iostream>
 #include <vector>
@@ -57,3 +59,5 @@ public:
     vector<Move> get_all_moves();                                                                                  // Gets all possible moves for the current player
     vector<Move> get_valid_moves();                                                                                // Gets all valid moves for the current player
 };
+
+#endif // ENGINE_H
