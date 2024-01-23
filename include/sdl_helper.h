@@ -3,8 +3,10 @@
 #include <engine.h>
 
 // Function prototypes
-int init(SDL_Window **window, SDL_Surface **surface, unsigned long *time);
-int drawBoard(SDL_Window **window, SDL_Surface **surface);
-int loadPieces(BitBoard *bitboard);
-int drawPieces(SDL_Window **window, SDL_Surface **surface, BitBoard *bitboard);
-int close(SDL_Window *window);
+int init(SDL_Window **window, SDL_Renderer **renderer, unsigned long *time);
+int drawBoard(SDL_Renderer **renderer);
+int loadPieces(BitBoard *bitboard, SDL_Renderer **renderer);
+int drawPieces(SDL_Renderer **renderer, BitBoard *bitboard);
+void draw_circle(SDL_Renderer *renderer, int x, int y, int radius, SDL_Color color);
+void highlight_valid_squares(SDL_Renderer *renderer, vector<Move> validMoves, pair<int, int> square);
+int close(SDL_Window *window, SDL_Renderer *renderer);

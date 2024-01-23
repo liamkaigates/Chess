@@ -1,22 +1,27 @@
 #include "game.h"
 
 // Run the chess game loop
-int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime)
+int runGame(SDL_Renderer **renderer, unsigned long *startTime)
 {
     Game game = Game();
     vector<Move> valid_moves = game.get_valid_moves();
+    // cout << "Getting valid moves" << endl;
+    // game.print_moves(valid_moves);
     game.board = BitBoard();
-    loadPieces(&(game.board));
+    loadPieces(&(game.board), renderer);
     SDL_Event e;
     bool quit = false;
     pair<int, int> square;
+    std::make_pair(-1, -1);
     vector<pair<int, int>> clicks;
     unsigned long time = SDL_GetTicks();
     bool move_made = false;
     while (!quit)
     {
-        drawBoard(window, surface);
-        drawPieces(window, surface, &(game.board));
+        SDL_RenderClear(*renderer);
+        drawBoard(renderer);
+        drawPieces(renderer, &(game.board));
+        highlight_valid_squares(*renderer, valid_moves, square);
         while (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
@@ -42,6 +47,8 @@ int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime
                 if (clicks.size() == 2)
                 {
                     Move move = game.get_move(clicks);
+                    // cout << "Getting valid moves" << endl;
+                    // game.print_moves(valid_moves);
                     for (size_t i = 0; i < valid_moves.size(); ++i)
                     {
                         if (move == valid_moves[i])
@@ -81,7 +88,7 @@ int runGame(SDL_Window **window, SDL_Surface **surface, unsigned long *startTime
             time = SDL_GetTicks();
         }
         *startTime = time;
+        SDL_RenderPresent(*renderer);
     }
-
     return 0;
 }

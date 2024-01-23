@@ -99,7 +99,6 @@ bool Game::in_check()
 // Function to get valid moves
 vector<Move> Game::get_valid_moves()
 {
-    cout << "Getting valid moves" << endl;
     vector<Move> all_moves = get_all_moves();
     vector<Move> valid_moves;
 

@@ -30,7 +30,7 @@ public:
     // Maps to associate piece names and bitboards
     map<int, string> piece_map;
     map<string, U64 *> board_map;
-    map<string, SDL_Surface *> image_map;
+    map<string, SDL_Texture *> image_map;
 
     // Function to get the bitboard for all white pieces
     U64 get_white_board();

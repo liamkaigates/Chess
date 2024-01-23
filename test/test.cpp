@@ -24,10 +24,10 @@ protected:
 TEST_F(ChessAppTest, GameInitialization)
 {
     SDL_Window *window = nullptr;
-    SDL_Surface *surface = nullptr;
+    SDL_Renderer *renderer = nullptr;
     unsigned long time;
 
-    ASSERT_EQ(init(&window, &surface, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
 
     // Add more checks if needed
 }
@@ -36,13 +36,13 @@ TEST_F(ChessAppTest, GameInitialization)
 TEST_F(ChessAppTest, DrawChessboard)
 {
     SDL_Window *window = nullptr;
-    SDL_Surface *surface = nullptr;
+    SDL_Renderer *renderer = nullptr;
     unsigned long time;
 
-    ASSERT_EQ(init(&window, &surface, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
 
     // Assuming SQ_SIZE, DIMENSION, and other constants are defined
-    ASSERT_EQ(drawBoard(&window, &surface), 0) << "Failed to draw the chessboard";
+    ASSERT_EQ(drawBoard(&renderer), 0) << "Failed to draw the chessboard";
 
     // Add more checks if needed
 }
@@ -50,9 +50,15 @@ TEST_F(ChessAppTest, DrawChessboard)
 // Test loading chess piece images
 TEST_F(ChessAppTest, LoadChessPieces)
 {
-    BitBoard bitboard;
 
-    ASSERT_EQ(loadPieces(&bitboard), 0) << "Failed to load chess piece images";
+    BitBoard bitboard;
+    SDL_Window *window = nullptr;
+    SDL_Renderer *renderer = nullptr;
+    unsigned long time;
+
+    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+
+    ASSERT_EQ(loadPieces(&bitboard, &renderer), 0) << "Failed to load chess piece images";
 
     // Add more checks if needed
 }
@@ -61,14 +67,14 @@ TEST_F(ChessAppTest, LoadChessPieces)
 TEST_F(ChessAppTest, MakeChessMove)
 {
     SDL_Window *window = nullptr;
-    SDL_Surface *surface = nullptr;
+    SDL_Renderer *renderer = nullptr;
     unsigned long time;
 
-    ASSERT_EQ(init(&window, &surface, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
 
     Game game;
     game.board = BitBoard();
-    loadPieces(&(game.board));
+    ASSERT_EQ(loadPieces(&(game.board), &renderer), 0) << "Failed to load chess piece images";
 
     // Assuming valid_moves and other necessary variables are available
     vector<Move> valid_moves = game.get_valid_moves();
@@ -85,14 +91,14 @@ TEST_F(ChessAppTest, MakeChessMove)
 TEST_F(ChessAppTest, UndoChessMove)
 {
     SDL_Window *window = nullptr;
-    SDL_Surface *surface = nullptr;
+    SDL_Renderer *renderer = nullptr;
     unsigned long time;
 
-    ASSERT_EQ(init(&window, &surface, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
 
     Game game;
     game.board = BitBoard();
-    loadPieces(&(game.board));
+    ASSERT_EQ(loadPieces(&(game.board), &renderer), 0) << "Failed to load chess piece images";
 
     // Make a move
     vector<Move> valid_moves = game.get_valid_moves();
