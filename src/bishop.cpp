@@ -8,19 +8,16 @@ using namespace std;
 vector<Move> Game::get_bishop_moves(int i, int j)
 {
     vector<Move> bishop_moves;
-    int board_index;
     U64 opposite_board;
     char capture_color = (this->whiteTurn) ? 'b' : 'w';
 
     // Determine the board index and opposite board based on the current turn
     if (this->whiteTurn)
     {
-        board_index = 2; // Assuming index 2 represents white bishops in the BitBoard class
         opposite_board = (this->board).get_black_board();
     }
     else
     {
-        board_index = 8; // Assuming index 8 represents black bishops in the BitBoard class
         opposite_board = (this->board).get_white_board();
     }
 
@@ -37,7 +34,7 @@ vector<Move> Game::get_bishop_moves(int i, int j)
              file += fileDirection, rank += rankDirection)
         {
             Move bishop_move = this->create_piece_move(color, 'b', i, j, rank, file);
-            if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color, board_index))
+            if (this->add_piece_move(bishop_moves, bishop_move, opposite_board, capture_color))
                 break;
         }
     };

@@ -53,6 +53,7 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                     {
                         if (move == valid_moves[i])
                         {
+                            // cout << "User made move" << endl;
                             game.make_move(valid_moves[i], true);
                             valid_moves = game.get_valid_moves();
                             move_made = true;

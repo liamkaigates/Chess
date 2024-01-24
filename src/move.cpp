@@ -29,17 +29,9 @@ char Game::find_captured_piece(int i, int j)
 }
 
 // Function to check if a square on the board is empty
-bool Game::is_empty_square(int i, int bit)
+bool Game::is_empty_square(int bit)
 {
-    U64 result = 0;
-    for (int j = 0; j < 12; ++j)
-    {
-        if (j != i)
-        {
-            result |= (this->board).boards[j];
-        }
-    }
-    return (get_bit(result, bit) == 0);
+    return (get_bit(this->board.get_black_board() | this->board.get_white_board(), bit) == 0);
 }
 
 // Function to get the move based on the clicks
@@ -49,6 +41,8 @@ Move Game::get_move(vector<pair<int, int>> clicks)
     Move move;
     move.start_rank = DIMENSION - 1 - clicks[0].first;
     move.start_file = clicks[0].second;
+    move.end_rank = DIMENSION - 1 - clicks[1].first;
+    move.end_file = clicks[1].second;
     for (int i = 0; i < 12; ++i)
     {
         U64 &board = (this->board).boards[i];
@@ -56,8 +50,6 @@ Move Game::get_move(vector<pair<int, int>> clicks)
         {
             move.color = (*this).board.piece_map[i][0];
             move.piece = (*this).board.piece_map[i][1];
-            move.end_rank = DIMENSION - 1 - clicks[1].first;
-            move.end_file = clicks[1].second;
             return move;
         }
     }
@@ -190,9 +182,9 @@ Move Game::create_piece_move(char color, char piece, int start_rank, int start_f
 }
 
 // Function to add a piece move to the list of moves
-bool Game::add_piece_move(vector<Move> &moves, Move &move, U64 opposite_board, char capture_color, int board_index)
+bool Game::add_piece_move(vector<Move> &moves, Move &move, U64 opposite_board, char capture_color)
 {
-    if (this->is_empty_square(board_index, (move.end_file + DIMENSION * move.end_rank)))
+    if (this->is_empty_square((move.end_file + DIMENSION * move.end_rank)))
     {
         move.capture = false;
         moves.push_back(move);

@@ -18,17 +18,17 @@ void Game::print_board(U64 board)
     // Print the top border
     cout << "  +---+---+---+---+---+---+---+---+\n";
 
-    // Iterate through each square on the board
-    for (int i = 0; i < DIMENSION; ++i)
+    // Iterate through each square on the board in reverse order
+    for (int i = DIMENSION - 1; i >= 0; --i)
     {
         // Print the left border
-        cout << DIMENSION - i << " | ";
+        cout << i + 1 << " | ";
 
         // Iterate through each square on the board
         for (int j = 0; j < DIMENSION; ++j)
         {
             // Print the piece occupying the square
-            cout << ((get_bit(board, (i * DIMENSION + j)) == 1) ? "X" : " ") << " | ";
+            cout << ((get_bit(board, (i * DIMENSION + j)) == 1) ? this->find_captured_piece(i, j) : ' ') << " | ";
         }
 
         // Print the right border

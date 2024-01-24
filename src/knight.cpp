@@ -8,19 +8,16 @@ using namespace std;
 vector<Move> Game::get_knight_moves(int i, int j)
 {
     vector<Move> knight_moves;
-    int board_index;
     U64 opposite_board;
     char capture_color = (this->whiteTurn) ? 'b' : 'w';
 
     // Determine the board index and opposite board based on the current turn
     if (this->whiteTurn)
     {
-        board_index = 1; // Assuming index 1 represents white knights in the BitBoard class
         opposite_board = (this->board).get_black_board();
     }
     else
     {
-        board_index = 7; // Assuming index 7 represents black knights in the BitBoard class
         opposite_board = (this->board).get_white_board();
     }
 
@@ -39,7 +36,7 @@ vector<Move> Game::get_knight_moves(int i, int j)
         if (square.first >= 0 && square.first < DIMENSION && square.second >= 0 && square.second < DIMENSION)
         {
             Move knight_move = this->create_piece_move(color, 'n', i, j, square.first, square.second);
-            this->add_piece_move(knight_moves, knight_move, opposite_board, capture_color, board_index);
+            this->add_piece_move(knight_moves, knight_move, opposite_board, capture_color);
         }
     }
 
