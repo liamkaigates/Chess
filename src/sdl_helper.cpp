@@ -129,6 +129,12 @@ void highlight_valid_squares(SDL_Renderer *renderer, vector<Move> validMoves, pa
     {
         int r = DIMENSION - 1 - square.first;
         int c = square.second;
+        // Draw the circle on valid squares
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        // Set color of square
+        SDL_SetRenderDrawColor(renderer, 235, 97, 80, 50);
+        // Highlight start square
+        SDL_RenderFillRect(renderer, new SDL_Rect{c * SQ_SIZE, (DIMENSION - 1 - r) * SQ_SIZE, SQ_SIZE, SQ_SIZE});
 
         for (const Move &move : validMoves)
         {
