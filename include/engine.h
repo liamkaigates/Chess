@@ -40,7 +40,7 @@ public:
     void print_board(U64 board);                                                                                // Prints the given bitboard representation of the chess board
     void print_main_board();                                                                                    // Prints the main chess board
     void clear_boards(int bit);                                                                                 // Clears the bitboards
-    void undo_move();                                                                                           // Undoes the last move made
+    void undo_move(bool user);                                                                                  // Undoes the last move made
     bool is_empty_square(int bit);                                                                              // Checks if a square on the chess board is empty
     Move get_move(vector<pair<int, int>> clicks);                                                               // Gets a move from user input
     void print_move(Move move);                                                                                 // Prints a move
@@ -57,7 +57,8 @@ public:
     bool in_check();                                                                                            // Checks if the current player is in check
     bool square_under_attack(int i, int j);                                                                     // Checks if a square on the chess board is under attack
     vector<Move> get_all_moves();                                                                               // Gets all possible moves for the current player
-    vector<Move> get_valid_moves();                                                                             // Gets all valid moves for the current player
+    vector<Move> get_valid_moves();
+    void promote_pawn(int square, string piece_type); // Gets all valid moves for the current player
 };
 
 #endif // ENGINE_H

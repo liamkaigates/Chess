@@ -39,6 +39,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
         pawn_move.capture = true;
         pawn_move.capture_piece = this->find_captured_piece(i + forward_direction, j - 1);
         pawn_move.capture_color = capture_color;
+        pawn_move.promotion = (i + forward_direction == 7) || (i + forward_direction == 0);
         pawn_moves.push_back(pawn_move);
     }
 
@@ -49,6 +50,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
         pawn_move.capture = true;
         pawn_move.capture_piece = this->find_captured_piece(i + forward_direction, j + 1);
         pawn_move.capture_color = capture_color;
+        pawn_move.promotion = (i + forward_direction == 7) || (i + forward_direction == 0);
         pawn_moves.push_back(pawn_move);
     }
 

@@ -11,6 +11,8 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
     loadPieces(&(game.board), renderer);
     SDL_Event e;
     bool quit = false;
+    bool promotion = false;
+    int promotion_square = 0;
     pair<int, int> square;
     std::make_pair(-1, -1);
     vector<pair<int, int>> clicks;
@@ -54,7 +56,13 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                         if (move == valid_moves[i])
                         {
                             // cout << "User made move" << endl;
+                            // game.print_move(valid_moves[i]);
                             game.make_move(valid_moves[i], true);
+                            if (valid_moves[i].promotion)
+                            {
+                                promotion = true;
+                                promotion_square = move.end_file + DIMENSION * move.end_rank;
+                            }
                             valid_moves = game.get_valid_moves();
                             move_made = true;
                             break;
@@ -78,7 +86,7 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                 SDL_Keycode keyCode = e.key.keysym.sym;
                 if (keyCode == SDLK_z)
                 {
-                    game.undo_move();
+                    game.undo_move(true);
                     valid_moves = game.get_valid_moves();
                 }
             }
@@ -90,6 +98,48 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
         }
         *startTime = time;
         SDL_RenderPresent(*renderer);
+        while (promotion)
+        {
+            while (SDL_PollEvent(&e))
+            {
+                if (e.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+                else if (e.type == SDL_KEYDOWN)
+                {
+                    SDL_Keycode keyCode = e.key.keysym.sym;
+                    if (keyCode == SDLK_q)
+                    {
+                        game.promote_pawn(promotion_square, "q");
+                        promotion = false;
+                        valid_moves = game.get_valid_moves();
+                        promotion_square = 0;
+                    }
+                    else if (keyCode == SDLK_r)
+                    {
+                        game.promote_pawn(promotion_square, "r");
+                        promotion = false;
+                        valid_moves = game.get_valid_moves();
+                        promotion_square = 0;
+                    }
+                    else if (keyCode == SDLK_b)
+                    {
+                        game.promote_pawn(promotion_square, "b");
+                        promotion = false;
+                        valid_moves = game.get_valid_moves();
+                        promotion_square = 0;
+                    }
+                    else if (keyCode == SDLK_n)
+                    {
+                        game.promote_pawn(promotion_square, "n");
+                        promotion = false;
+                        valid_moves = game.get_valid_moves();
+                        promotion_square = 0;
+                    }
+                }
+            }
+        }
     }
     return 0;
 }

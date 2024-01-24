@@ -78,7 +78,14 @@ void Game::make_move(Move move, bool user)
             }
             clear_bit(board, startSquare);
             clear_boards(endSquare);
-            set_bit(board, endSquare);
+            if (move.promotion && !user)
+            {
+                promote_pawn(endSquare, "q");
+            }
+            else
+            {
+                set_bit(board, endSquare);
+            }
             this->add_move(move);
             this->whiteTurn = !this->whiteTurn;
             break;
@@ -88,7 +95,7 @@ void Game::make_move(Move move, bool user)
 }
 
 // Function to undo a move
-void Game::undo_move()
+void Game::undo_move(bool user)
 {
     if (!moves.empty())
     {
@@ -114,7 +121,15 @@ void Game::undo_move()
                 }
                 clear_bit(board, endSquare);
                 clear_boards(startSquare);
-                set_bit(board, startSquare);
+                if (move.promotion)
+                {
+                    int pawn_index = (this->whiteTurn) ? 6 : 0;
+                    set_bit((this->board).boards[pawn_index], startSquare);
+                }
+                else
+                {
+                    set_bit(board, startSquare);
+                }
                 this->whiteTurn = !this->whiteTurn;
                 if (move.capture)
                 {

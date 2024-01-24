@@ -32,9 +32,8 @@ public:
 
     // Maps to associate piece names and bitboards
     map<int, string> piece_map;
-    map<string, U64 *> board_map;
     map<string, SDL_Texture *> image_map;
-
+    map<string, int> piece_index;
     // Function to get the bitboard for all white pieces
     U64 get_white_board();
 
@@ -86,19 +85,19 @@ public:
         piece_map[10] = "bq";
         piece_map[11] = "bk";
 
-        // Initialize the piece name to bitboard pointer mapping
-        board_map["wp"] = &boards[0];
-        board_map["wn"] = &boards[1];
-        board_map["wb"] = &boards[2];
-        board_map["wr"] = &boards[3];
-        board_map["wq"] = &boards[4];
-        board_map["wk"] = &boards[5];
-        board_map["bp"] = &boards[6];
-        board_map["bn"] = &boards[7];
-        board_map["bb"] = &boards[8];
-        board_map["br"] = &boards[9];
-        board_map["bq"] = &boards[10];
-        board_map["bk"] = &boards[11];
+        // Initialize the piece index
+        piece_index["wp"] = 0;
+        piece_index["wn"] = 1;
+        piece_index["wb"] = 2;
+        piece_index["wr"] = 3;
+        piece_index["wq"] = 4;
+        piece_index["wk"] = 5;
+        piece_index["bp"] = 6;
+        piece_index["bn"] = 7;
+        piece_index["bb"] = 8;
+        piece_index["br"] = 9;
+        piece_index["bq"] = 10;
+        piece_index["bk"] = 11;
     }
 };
 

@@ -63,6 +63,24 @@ vector<Move> Game::get_all_moves()
     return all_moves;
 }
 
+void Game::promote_pawn(int square, string piece_type)
+{
+    // Get the color of the pawn
+    string piece = "b" + piece_type;
+    if (!this->whiteTurn)
+    {
+        piece = "w" + piece_type;
+    }
+
+    // Get the bitboard representation of the pawn
+    int pawn_index = (this->whiteTurn) ? 6 : 0;
+    int promotion_index = (this->board).piece_index[piece];
+    U64 &pawn_board = (this->board).boards[pawn_index];
+    U64 &promotion_board = (this->board).boards[promotion_index];
+    clear_bit(pawn_board, square);
+    set_bit(promotion_board, square);
+}
+
 // Function to check if a square is under attack
 bool Game::square_under_attack(int target_rank, int target_file)
 {
@@ -113,7 +131,7 @@ vector<Move> Game::get_valid_moves()
         }
 
         this->whiteTurn = !this->whiteTurn;
-        this->undo_move();
+        this->undo_move(false);
     }
 
     // Check for checkmate or stalemate

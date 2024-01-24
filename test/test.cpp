@@ -161,7 +161,7 @@ TEST_F(ChessAppTest, UndoChessMove)
     ASSERT_NO_THROW(game.make_move(move, true)) << "Failed to make a move";
 
     // Undo the move
-    ASSERT_NO_THROW(game.undo_move()) << "Failed to undo the move";
+    ASSERT_NO_THROW(game.undo_move(false)) << "Failed to undo the move";
 
     // Add more checks if needed
 }
@@ -240,7 +240,7 @@ TEST_F(ChessAppTest, UndoMultipleRandomMovesRestorePieces)
     // Undo multiple random moves
     for (int i = 0; i < 20; ++i) // Adjust the number of random moves as needed
     {
-        ASSERT_NO_THROW(game.undo_move()) << "Failed to undo the move";
+        ASSERT_NO_THROW(game.undo_move(false)) << "Failed to undo the move";
     }
     // Ensure pieces are restored after undoing multiple moves
     for (int pieceType = 0; pieceType < 12; ++pieceType)
