@@ -82,7 +82,7 @@ void Game::promote_pawn(int square, string piece_type)
 }
 
 // Function to check if a square is under attack
-bool Game::square_under_attack(int target_rank, int target_file)
+bool Game::square_under_attack(int target_square)
 {
     // Get all possible moves for the opponent
     this->whiteTurn = !this->whiteTurn;
@@ -92,7 +92,7 @@ bool Game::square_under_attack(int target_rank, int target_file)
     // Check if the target square is present in the opponent's move set
     for (const Move &move : opponent_moves)
     {
-        if (move.end_rank == target_rank && move.end_file == target_file)
+        if ((move.end_file + (move.end_rank * DIMENSION)) == target_square)
         {
             return true;
         }
@@ -106,11 +106,11 @@ bool Game::in_check()
 {
     if (this->whiteTurn)
     {
-        return square_under_attack(this->white_king_location.first, this->white_king_location.second);
+        return square_under_attack(this->white_king_location);
     }
     else
     {
-        return square_under_attack(this->black_king_location.first, this->black_king_location.second);
+        return square_under_attack(this->black_king_location);
     }
 }
 
@@ -119,7 +119,7 @@ vector<Move> Game::get_valid_moves()
 {
     vector<Move> all_moves = get_all_moves();
     vector<Move> valid_moves;
-    vector<pair<int, int>> temp_en_passant_pawns = this->en_passant_pawns;
+    vector<int> temp_en_passant_pawns = this->en_passant_pawns;
     // Loop through all moves and check if the move is valid
     for (const Move &move : all_moves)
     {

@@ -57,7 +57,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     }
 
     // Check if the pawn can make an en passant capture to the left
-    if (i == en_passant_rank && en_passant_pawns.back() == make_pair(i, j - 1) && j > 0 && get_bit(en_passant_board, ((j - 1) + DIMENSION * i)) == 1)
+    if (i == en_passant_rank && en_passant_pawns.back() == ((j - 1) + DIMENSION * i) && j > 0 && get_bit(en_passant_board, ((j - 1) + DIMENSION * i)) == 1)
     {
         Move en_passant_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j - 1);
         en_passant_move.is_enpassant = true;
@@ -67,7 +67,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     }
 
     // Check if the pawn can make an en passant capture to the right
-    if (i == en_passant_rank && j < 7 && en_passant_pawns.back() == make_pair(i, j + 1) && get_bit(en_passant_board, ((j + 1) + DIMENSION * i)) == 1)
+    if (i == en_passant_rank && j < 7 && en_passant_pawns.back() == ((j + 1) + DIMENSION * i) && get_bit(en_passant_board, ((j + 1) + DIMENSION * i)) == 1)
     {
         Move en_passant_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j + 1);
         en_passant_move.is_enpassant = true;

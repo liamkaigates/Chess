@@ -37,12 +37,12 @@ bool Game::is_empty_square(int bit)
 // Function to get the move based on the clicks
 Move Game::get_move(vector<pair<int, int>> clicks)
 {
-    int square = (DIMENSION - 1 - clicks[0].first) * DIMENSION + clicks[0].second;
     Move move;
     move.start_rank = DIMENSION - 1 - clicks[0].first;
     move.start_file = clicks[0].second;
     move.end_rank = DIMENSION - 1 - clicks[1].first;
     move.end_file = clicks[1].second;
+    int square = move.start_rank * DIMENSION + move.start_file;
     for (int i = 0; i < 12; ++i)
     {
         U64 &board = (this->board).boards[i];
@@ -70,11 +70,11 @@ void Game::make_move(Move move, bool user)
         {
             if (i == 5)
             {
-                this->white_king_location = {move.end_rank, move.end_file};
+                this->white_king_location = endSquare;
             }
             else if (i == 11)
             {
-                this->black_king_location = {move.end_rank, move.end_file};
+                this->black_king_location = endSquare;
             }
             clear_bit(board, startSquare);
             clear_boards(endSquare);
@@ -85,11 +85,11 @@ void Game::make_move(Move move, bool user)
             }
             if (move.piece == 'p' && abs(move.end_rank - move.start_rank) == 2)
             {
-                en_passant_pawns.push_back({move.end_rank, move.end_file});
+                en_passant_pawns.push_back(move.end_file + DIMENSION * move.end_rank);
             }
             else
             {
-                en_passant_pawns.push_back({-1, -1});
+                en_passant_pawns.push_back(-1);
             }
             if (move.promotion && !user)
             {
@@ -132,11 +132,11 @@ void Game::undo_move(bool user)
             {
                 if (i == 5)
                 {
-                    this->white_king_location = {move.start_rank, move.start_file};
+                    this->white_king_location = startSquare;
                 }
                 else if (i == 11)
                 {
-                    this->black_king_location = {move.start_rank, move.start_file};
+                    this->black_king_location = startSquare;
                 }
                 clear_bit(board, endSquare);
                 clear_boards(startSquare);

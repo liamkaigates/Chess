@@ -24,16 +24,16 @@ class Game
 {
 public:
     // Game state variables
-    BitBoard board;                              // Bitboard representation of the chess board
-    bool whiteTurn = true;                       // Indicates if it's currently white's turn
-    bool checkmate = false;                      // Indicates if a checkmate has occurred
-    bool stalemate = false;                      // Indicates if a stalemate has occurred
-    pair<int, int> white_king_location = {0, 4}; // Location of the white king
-    pair<int, int> black_king_location = {7, 4}; // Location of the black king
-    bool white_castle = true;                    // Indicates if white can castle
-    bool black_castle = true;                    // Indicates if black can castle
-    vector<Move> moves;                          // List of moves made in the game
-    vector<pair<int, int>> en_passant_pawns;     // List of pawns that can be captured en passant
+    BitBoard board;               // Bitboard representation of the chess board
+    bool whiteTurn = true;        // Indicates if it's currently white's turn
+    bool checkmate = false;       // Indicates if a checkmate has occurred
+    bool stalemate = false;       // Indicates if a stalemate has occurred
+    int white_king_location = 4;  // Location of the white king
+    int black_king_location = 60; // Location of the black king
+    bool white_castle = true;     // Indicates if white can castle
+    bool black_castle = true;     // Indicates if black can castle
+    vector<Move> moves;           // List of moves made in the game
+    vector<int> en_passant_pawns; // List of pawns that can be captured en passant
     // Member functions
     void add_move(Move move);                                                                                   // Adds a move to the list of moves
     void make_move(Move move, bool user);                                                                       // Makes a move on the chess board
@@ -55,7 +55,7 @@ public:
     vector<Move> get_queen_moves(int i, int j);                                                                 // Gets all possible moves for a queen
     vector<Move> get_king_moves(int i, int j);                                                                  // Gets all possible moves for a king
     bool in_check();                                                                                            // Checks if the current player is in check
-    bool square_under_attack(int i, int j);                                                                     // Checks if a square on the chess board is under attack
+    bool square_under_attack(int bit);                                                                          // Checks if a square on the chess board is under attack
     vector<Move> get_all_moves();                                                                               // Gets all possible moves for the current player
     vector<Move> get_valid_moves();
     void promote_pawn(int square, string piece_type); // Gets all valid moves for the current player
