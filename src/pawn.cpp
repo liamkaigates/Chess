@@ -13,7 +13,9 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     char capture_color = (this->whiteTurn) ? 'b' : 'w';
     int forward_direction = (this->whiteTurn) ? 1 : -1;
     U64 capture_board = (this->whiteTurn) ? (this->board).get_black_board() : (this->board).get_white_board();
+    U64 en_passant_board = (this->whiteTurn) ? (this->board).boards[6] : (this->board).boards[0];
     int two_move_rank = (this->whiteTurn) ? 1 : 6;
+    int en_passant_rank = (this->whiteTurn) ? 4 : 3;
 
     // Check if the square in front of the pawn is empty
     if (this->is_empty_square(j + DIMENSION * (forward_direction + i)))
@@ -52,6 +54,26 @@ vector<Move> Game::get_pawn_moves(int i, int j)
         pawn_move.capture_color = capture_color;
         pawn_move.promotion = (i + forward_direction == 7) || (i + forward_direction == 0);
         pawn_moves.push_back(pawn_move);
+    }
+
+    // Check if the pawn can make an en passant capture to the left
+    if (i == en_passant_rank && j > 0 && get_bit(en_passant_board, ((j - 1) + DIMENSION * i)) == 1)
+    {
+        Move en_passant_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j - 1);
+        en_passant_move.is_enpassant = true;
+        en_passant_move.en_passant_file = j - 1;
+        en_passant_move.en_passant_rank = i;
+        pawn_moves.push_back(en_passant_move);
+    }
+
+    // Check if the pawn can make an en passant capture to the right
+    if (i == en_passant_rank && j < 7 && get_bit(en_passant_board, ((j + 1) + DIMENSION * i)) == 1)
+    {
+        Move en_passant_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j + 1);
+        en_passant_move.is_enpassant = true;
+        en_passant_move.en_passant_file = j + 1;
+        en_passant_move.en_passant_rank = i;
+        pawn_moves.push_back(en_passant_move);
     }
 
     return pawn_moves;

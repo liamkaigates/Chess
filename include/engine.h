@@ -33,7 +33,7 @@ public:
     bool white_castle = true;                    // Indicates if white can castle
     bool black_castle = true;                    // Indicates if black can castle
     vector<Move> moves;                          // List of moves made in the game
-
+    vector<pair<int, int>> en_passant_pawns;     // List of pawns that can be captured en passant
     // Member functions
     void add_move(Move move);                                                                                   // Adds a move to the list of moves
     void make_move(Move move, bool user);                                                                       // Makes a move on the chess board
