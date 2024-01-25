@@ -55,8 +55,8 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                     {
                         if (move == valid_moves[i])
                         {
-                            cout << "User made move" << endl;
-                            game.print_move(valid_moves[i]);
+                            // cout << "User made move" << endl;
+                            // game.print_move(valid_moves[i]);
                             game.make_move(valid_moves[i], true);
                             if (valid_moves[i].promotion)
                             {

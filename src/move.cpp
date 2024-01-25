@@ -59,8 +59,8 @@ Move Game::get_move(vector<pair<int, int>> clicks)
 // Function to make a move
 void Game::make_move(Move move, bool user)
 {
-    cout << "Making move" << endl;
-    this->print_move(move);
+    // cout << "Making move" << endl;
+    // this->print_move(move);
     int startSquare = move.start_rank * DIMENSION + move.start_file;
     int endSquare = move.end_rank * DIMENSION + move.end_file;
     for (int i = 0; i < 12; ++i)
@@ -83,6 +83,14 @@ void Game::make_move(Move move, bool user)
                 U64 &en_passant_board = (this->whiteTurn) ? (this->board).boards[6] : (this->board).boards[0];
                 clear_bit(en_passant_board, (move.en_passant_file + DIMENSION * move.en_passant_rank));
             }
+            if (move.piece == 'p' && abs(move.end_rank - move.start_rank) == 2)
+            {
+                en_passant_pawns.push_back({move.end_rank, move.end_file});
+            }
+            else
+            {
+                en_passant_pawns.push_back({-1, -1});
+            }
             if (move.promotion && !user)
             {
                 promote_pawn(endSquare, "q");
@@ -96,13 +104,13 @@ void Game::make_move(Move move, bool user)
             break;
         }
     }
-    if (move.piece == 'p')
-    {
-        cout << "wp" << endl;
-        this->print_board(board.boards[0]);
-        cout << "bp" << endl;
-        this->print_board(board.boards[6]);
-    }
+    // if (move.piece == 'p')
+    // {
+    //     cout << "wp" << endl;
+    //     this->print_board(board.boards[0]);
+    //     cout << "bp" << endl;
+    //     this->print_board(board.boards[6]);
+    // }
 }
 
 // Function to undo a move
@@ -110,9 +118,9 @@ void Game::undo_move(bool user)
 {
     if (!moves.empty())
     {
-        cout << "Undoing move" << endl;
+        // cout << "Undoing move" << endl;
         Move move = moves.back();
-        this->print_move(move);
+        // this->print_move(move);
         moves.pop_back();
         int startSquare = move.start_rank * DIMENSION + move.start_file;
         int endSquare = move.end_rank * DIMENSION + move.end_file;
@@ -134,10 +142,10 @@ void Game::undo_move(bool user)
                 clear_boards(startSquare);
                 if (move.is_enpassant)
                 {
-                    cout << "is en passant" << endl;
                     U64 &en_passant_board = (this->whiteTurn) ? (this->board).boards[0] : (this->board).boards[6];
                     set_bit(en_passant_board, (move.en_passant_file + DIMENSION * move.en_passant_rank));
                 }
+                en_passant_pawns.pop_back();
                 if (move.promotion)
                 {
                     int pawn_index = (this->whiteTurn) ? 6 : 0;
@@ -196,13 +204,13 @@ void Game::undo_move(bool user)
                 break;
             }
         }
-        if (move.piece == 'p')
-        {
-            cout << "wp" << endl;
-            this->print_board(board.boards[0]);
-            cout << "bp" << endl;
-            this->print_board(board.boards[6]);
-        }
+        // if (move.piece == 'p')
+        // {
+        //     cout << "wp" << endl;
+        //     this->print_board(board.boards[0]);
+        //     cout << "bp" << endl;
+        //     this->print_board(board.boards[6]);
+        // }
     }
 }
 

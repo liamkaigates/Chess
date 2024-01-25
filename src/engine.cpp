@@ -119,6 +119,7 @@ vector<Move> Game::get_valid_moves()
 {
     vector<Move> all_moves = get_all_moves();
     vector<Move> valid_moves;
+    vector<pair<int, int>> temp_en_passant_pawns = this->en_passant_pawns;
     // Loop through all moves and check if the move is valid
     for (const Move &move : all_moves)
     {
@@ -151,6 +152,6 @@ vector<Move> Game::get_valid_moves()
         this->checkmate = false;
         this->stalemate = false;
     }
-
+    this->en_passant_pawns = temp_en_passant_pawns;
     return valid_moves;
 }
