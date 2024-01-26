@@ -120,6 +120,17 @@ vector<Move> Game::get_valid_moves()
     vector<Move> all_moves = get_all_moves();
     vector<Move> valid_moves;
     vector<int> temp_en_passant_pawns = this->en_passant_pawns;
+    vector<int> temp_castle_rights = this->castle_rights;
+    // Add castle moves to all moves
+    vector<Move> castle_moves;
+    if (this->whiteTurn)
+    {
+        castle_moves = this->get_castle_moves(0, 4);
+    }
+    else
+    {
+        castle_moves = this->get_castle_moves(7, 4);
+    }
     // Loop through all moves and check if the move is valid
     for (const Move &move : all_moves)
     {
@@ -134,7 +145,7 @@ vector<Move> Game::get_valid_moves()
         this->whiteTurn = !this->whiteTurn;
         this->undo_move(false);
     }
-
+    valid_moves.insert(valid_moves.end(), castle_moves.begin(), castle_moves.end());
     // Check for checkmate or stalemate
     if (valid_moves.empty())
     {
@@ -153,5 +164,6 @@ vector<Move> Game::get_valid_moves()
         this->stalemate = false;
     }
     this->en_passant_pawns = temp_en_passant_pawns;
+    this->castle_rights = temp_castle_rights;
     return valid_moves;
 }

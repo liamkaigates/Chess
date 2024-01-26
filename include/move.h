@@ -18,6 +18,7 @@ public:
     bool is_enpassant;   // Indicates if the move is an en passant capture
     int en_passant_file; // The file of the en passant capture
     int en_passant_rank; // The rank of the en passant capture
+    bool is_castle;      // Indicates if a castle occurs during the move
 
     // Define the equality operator
     bool operator==(const Move &other) const

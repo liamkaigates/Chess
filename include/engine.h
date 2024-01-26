@@ -30,10 +30,10 @@ public:
     bool stalemate = false;       // Indicates if a stalemate has occurred
     int white_king_location = 4;  // Location of the white king
     int black_king_location = 60; // Location of the black king
-    bool white_castle = true;     // Indicates if white can castle
-    bool black_castle = true;     // Indicates if black can castle
     vector<Move> moves;           // List of moves made in the game
     vector<int> en_passant_pawns; // List of pawns that can be captured en passant
+    int castle_right;             // Castle rights for the current player
+    vector<int> castle_rights;    // List of castle rights for each player
     // Member functions
     void add_move(Move move);                                                                                   // Adds a move to the list of moves
     void make_move(Move move, bool user);                                                                       // Makes a move on the chess board
@@ -59,6 +59,8 @@ public:
     vector<Move> get_all_moves();                                                                               // Gets all possible moves for the current player
     vector<Move> get_valid_moves();
     void promote_pawn(int square, string piece_type); // Gets all valid moves for the current player
+    void update_castle_rights(Move move);             // Updates the castle rights for the current player
+    vector<Move> get_castle_moves(int i, int j);      // Gets all possible castle moves for the current player
 };
 
 #endif // ENGINE_H

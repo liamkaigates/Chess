@@ -78,6 +78,20 @@ void Game::make_move(Move move, bool user)
             }
             clear_bit(board, startSquare);
             clear_boards(endSquare);
+            if (move.is_castle)
+            {
+                U64 &rook_board = (this->whiteTurn) ? (this->board).boards[3] : (this->board).boards[9];
+                if (move.end_file - move.start_file > 0)
+                {
+                    clear_bit(rook_board, (move.start_rank * DIMENSION + 7));
+                    set_bit(rook_board, (move.start_rank * DIMENSION + 5));
+                }
+                else
+                {
+                    clear_bit(rook_board, (move.start_rank * DIMENSION));
+                    set_bit(rook_board, (move.start_rank * DIMENSION + 3));
+                }
+            }
             if (move.is_enpassant)
             {
                 U64 &en_passant_board = (this->whiteTurn) ? (this->board).boards[6] : (this->board).boards[0];
@@ -99,6 +113,7 @@ void Game::make_move(Move move, bool user)
             {
                 set_bit(board, endSquare);
             }
+            this->update_castle_rights(move);
             this->add_move(move);
             this->whiteTurn = !this->whiteTurn;
             break;
@@ -140,6 +155,20 @@ void Game::undo_move(bool user)
                 }
                 clear_bit(board, endSquare);
                 clear_boards(startSquare);
+                if (move.is_castle)
+                {
+                    U64 &rook_board = (this->whiteTurn) ? (this->board).boards[9] : (this->board).boards[3];
+                    if (move.end_file - move.start_file > 0)
+                    {
+                        clear_bit(rook_board, (move.start_rank * DIMENSION + 5));
+                        set_bit(rook_board, (move.start_rank * DIMENSION + 7));
+                    }
+                    else
+                    {
+                        clear_bit(rook_board, (move.start_rank * DIMENSION + 3));
+                        set_bit(rook_board, (move.start_rank * DIMENSION));
+                    }
+                }
                 if (move.is_enpassant)
                 {
                     U64 &en_passant_board = (this->whiteTurn) ? (this->board).boards[0] : (this->board).boards[6];
@@ -204,6 +233,8 @@ void Game::undo_move(bool user)
                 break;
             }
         }
+        this->castle_rights.pop_back();
+        this->castle_right = this->castle_rights.back();
         // if (move.piece == 'p')
         // {
         //     cout << "wp" << endl;
@@ -212,6 +243,51 @@ void Game::undo_move(bool user)
         //     this->print_board(board.boards[6]);
         // }
     }
+}
+
+// Function to update the castle rights
+void Game::update_castle_rights(Move move)
+{
+    int current_castle_right = this->castle_right;
+    if (move.piece == 'k')
+    {
+        if (move.color == 'w')
+        {
+            clear_bit(current_castle_right, 0);
+            clear_bit(current_castle_right, 1);
+        }
+        else
+        {
+            clear_bit(current_castle_right, 2);
+            clear_bit(current_castle_right, 3);
+        }
+    }
+    else if (move.piece == 'r')
+    {
+        if (move.color == 'w')
+        {
+            if (move.start_rank == 7 && move.start_file == 0)
+            {
+                clear_bit(current_castle_right, 0);
+            }
+            else if (move.start_rank == 7 && move.start_file == 7)
+            {
+                clear_bit(current_castle_right, 1);
+            }
+        }
+        else
+        {
+            if (move.start_rank == 0 && move.start_file == 0)
+            {
+                clear_bit(current_castle_right, 2);
+            }
+            else if (move.start_rank == 0 && move.start_file == 7)
+            {
+                clear_bit(current_castle_right, 3);
+            }
+        }
+    }
+    this->castle_rights.push_back(current_castle_right);
 }
 
 // Function to create a move for a piece
@@ -234,6 +310,7 @@ bool Game::add_piece_move(vector<Move> &moves, Move &move, U64 opposite_board, c
     {
         move.capture = false;
         move.is_enpassant = false;
+        move.is_castle = false;
         moves.push_back(move);
     }
     else
@@ -244,6 +321,7 @@ bool Game::add_piece_move(vector<Move> &moves, Move &move, U64 opposite_board, c
             move.capture_piece = this->find_captured_piece(move.end_rank, move.end_file);
             move.capture_color = capture_color;
             move.is_enpassant = false;
+            move.is_castle = false;
             moves.push_back(move);
         }
         return true;

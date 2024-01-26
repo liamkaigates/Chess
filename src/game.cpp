@@ -4,6 +4,8 @@
 int runGame(SDL_Renderer **renderer, unsigned long *startTime)
 {
     Game game = Game();
+    game.castle_right = 15;
+    game.castle_rights.push_back(game.castle_right);
     vector<Move> valid_moves = game.get_valid_moves();
     // cout << "Getting valid moves" << endl;
     // game.print_moves(valid_moves);

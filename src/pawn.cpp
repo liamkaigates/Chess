@@ -23,6 +23,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
         Move pawn_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j);
         pawn_move.promotion = (i + forward_direction == 7) || (i + forward_direction == 0);
         pawn_move.capture = false;
+        pawn_move.is_castle = false;
         pawn_moves.push_back(pawn_move);
     }
 
@@ -31,6 +32,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     {
         Move pawn_move = this->create_piece_move(color, 'p', i, j, i + forward_direction * 2, j);
         pawn_move.capture = false;
+        pawn_move.is_castle = false;
         pawn_moves.push_back(pawn_move);
     }
 
@@ -39,8 +41,10 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     {
         Move pawn_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j - 1);
         pawn_move.capture = true;
+
         pawn_move.capture_piece = this->find_captured_piece(i + forward_direction, j - 1);
         pawn_move.capture_color = capture_color;
+        pawn_move.is_castle = false;
         pawn_move.promotion = (i + forward_direction == 7) || (i + forward_direction == 0);
         pawn_moves.push_back(pawn_move);
     }
@@ -50,6 +54,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     {
         Move pawn_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j + 1);
         pawn_move.capture = true;
+        pawn_move.is_castle = false;
         pawn_move.capture_piece = this->find_captured_piece(i + forward_direction, j + 1);
         pawn_move.capture_color = capture_color;
         pawn_move.promotion = (i + forward_direction == 7) || (i + forward_direction == 0);
@@ -61,6 +66,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     {
         Move en_passant_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j - 1);
         en_passant_move.is_enpassant = true;
+        en_passant_move.is_castle = false;
         en_passant_move.en_passant_file = j - 1;
         en_passant_move.en_passant_rank = i;
         pawn_moves.push_back(en_passant_move);
@@ -71,6 +77,7 @@ vector<Move> Game::get_pawn_moves(int i, int j)
     {
         Move en_passant_move = this->create_piece_move(color, 'p', i, j, i + forward_direction, j + 1);
         en_passant_move.is_enpassant = true;
+        en_passant_move.is_castle = false;
         en_passant_move.en_passant_file = j + 1;
         en_passant_move.en_passant_rank = i;
         pawn_moves.push_back(en_passant_move);
