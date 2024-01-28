@@ -6,16 +6,15 @@ int main()
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
     // Initialize SDL
-    if (init(&window, &renderer, &time) != 0)
+    if (init(&window, &renderer) != 0)
     {
         return -1;
     }
 
     // Run the chess game
-    runGame(&renderer, &time);
+    runGame(&renderer);
 
     // Clean up and exit
     close(window, renderer);

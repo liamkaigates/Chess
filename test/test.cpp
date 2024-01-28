@@ -78,9 +78,8 @@ TEST_F(ChessAppTest, GameInitialization)
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     // Add more checks if needed
 }
@@ -90,9 +89,8 @@ TEST_F(ChessAppTest, DrawChessboard)
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     // Assuming SQ_SIZE, DIMENSION, and other constants are defined
     ASSERT_EQ(drawBoard(&renderer), 0) << "Failed to draw the chessboard";
@@ -107,9 +105,8 @@ TEST_F(ChessAppTest, LoadChessPieces)
     BitBoard bitboard;
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     ASSERT_EQ(loadPieces(&bitboard, &renderer), 0) << "Failed to load chess piece images";
 
@@ -121,9 +118,8 @@ TEST_F(ChessAppTest, MakeChessMove)
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     Game game;
     game.board = BitBoard();
@@ -145,9 +141,8 @@ TEST_F(ChessAppTest, UndoChessMove)
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     Game game;
     game.board = BitBoard();
@@ -171,9 +166,8 @@ TEST_F(ChessAppTest, MakeMultipleRandomMovesNoMissingPieces)
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     Game game;
     game.board = BitBoard();
@@ -207,9 +201,8 @@ TEST_F(ChessAppTest, UndoMultipleRandomMovesRestorePieces)
 {
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    unsigned long time;
 
-    ASSERT_EQ(init(&window, &renderer, &time), 0) << "SDL initialization failed";
+    ASSERT_EQ(init(&window, &renderer), 0) << "SDL initialization failed";
 
     Game game;
     game.board = BitBoard();

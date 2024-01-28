@@ -1,38 +1,37 @@
 #include "game.h"
 
 // Run the chess game loop
-int runGame(SDL_Renderer **renderer, unsigned long *startTime)
+int runGame(SDL_Renderer **renderer)
 {
     Game game = Game();
     game.castle_right = 15;
     game.castle_rights.push_back(game.castle_right);
     vector<Move> valid_moves = game.get_valid_moves();
-    // cout << "Getting valid moves" << endl;
-    // game.print_moves(valid_moves);
+    cout << "Getting valid moves" << endl;
+    game.print_moves(valid_moves);
     game.board = BitBoard();
     loadPieces(&(game.board), renderer);
     SDL_Event e;
     bool quit = false;
     bool promotion = false;
+    bool animation = false;
     int promotion_square = 0;
-    pair<int, int> square;
-    std::make_pair(-1, -1);
+    pair<int, int> square = make_pair(-1, -1);
     vector<pair<int, int>> clicks;
-    unsigned long time = SDL_GetTicks();
     bool move_made = false;
+    bool game_over = false;
     while (!quit)
     {
-        SDL_RenderClear(*renderer);
         drawBoard(renderer);
-        drawPieces(renderer, &(game.board));
         highlight_valid_squares(*renderer, valid_moves, square);
+        drawPieces(renderer, &(game.board));
         while (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
             {
                 quit = true;
             }
-            else if (e.type == SDL_MOUSEBUTTONDOWN)
+            else if (e.type == SDL_MOUSEBUTTONDOWN && !game_over)
             {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
@@ -51,8 +50,8 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                 if (clicks.size() == 2)
                 {
                     Move move = game.get_move(clicks);
-                    // cout << "Getting valid moves" << endl;
-                    // game.print_moves(valid_moves);
+                    cout << "Getting valid moves" << endl;
+                    game.print_moves(valid_moves);
                     for (size_t i = 0; i < valid_moves.size(); ++i)
                     {
                         if (move == valid_moves[i])
@@ -67,19 +66,9 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                             }
                             valid_moves = game.get_valid_moves();
                             move_made = true;
+                            animation = true;
                             break;
                         }
-                    }
-                    if (move_made)
-                    {
-                        clicks.clear();
-                        square = std::make_pair(-1, -1);
-                        move_made = false;
-                    }
-                    else
-                    {
-                        clicks.erase(clicks.begin(), clicks.end());
-                        clicks.push_back(square);
                     }
                 }
             }
@@ -90,16 +79,50 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                 {
                     game.undo_move(true);
                     valid_moves = game.get_valid_moves();
+                    animation = false;
+                }
+                else if (keyCode == SDLK_r)
+                {
+                    game = Game();
+                    game.castle_right = 15;
+                    game.castle_rights.push_back(game.castle_right);
+                    valid_moves = game.get_valid_moves();
+                    game.board = BitBoard();
+                    loadPieces(&(game.board), renderer);
+                    promotion = false;
+                    animation = false;
+                    game_over = false;
+                    promotion_square = 0;
+                    square = {-1, -1};
+                    clicks.clear();
+                    move_made = false;
                 }
             }
         }
-
-        while (time - *startTime < 1000 / MAX_FPS)
+        if (move_made)
         {
-            time = SDL_GetTicks();
+            if (animation)
+                animate(renderer, game, game.moves[game.moves.size() - 1]);
+            clicks.clear();
+            square = std::make_pair(-1, -1);
+            move_made = false;
+            animation = false;
         }
-        *startTime = time;
-        SDL_RenderPresent(*renderer);
+        else
+        {
+            clicks.erase(clicks.begin(), clicks.end());
+            clicks.push_back(square);
+        }
+        if (game.checkmate)
+        {
+            game_over = true;
+            endgame(renderer, game, true);
+        }
+        else if (game.stalemate)
+        {
+            game_over = true;
+            endgame(renderer, game, false);
+        }
         while (promotion)
         {
             while (SDL_PollEvent(&e))
@@ -142,6 +165,7 @@ int runGame(SDL_Renderer **renderer, unsigned long *startTime)
                 }
             }
         }
+        SDL_RenderPresent(*renderer);
     }
     return 0;
 }

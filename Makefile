@@ -17,7 +17,7 @@ IDIR = include
 CC = g++
 
 # Define the compiler flags
-CFLAGS = -I$(IDIR) -Wall -Wextra -g -lSDL2 -std=c++20 -Wunused-parameter
+CFLAGS = -I$(IDIR) -Wall -Wextra -g -lSDL2 -lSDL2_ttf -std=c++20 -Wunused-parameter
 
 # Define the object directory
 ODIR = obj
