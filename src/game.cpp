@@ -1,9 +1,11 @@
 #include "game.h"
+#include <ai.h>
 
 // Run the chess game loop
 int runGame(SDL_Renderer **renderer)
 {
     Game game = Game();
+    AI ai = AI();
     game.castle_right = 15;
     game.castle_rights.push_back(game.castle_right);
     vector<Move> valid_moves = game.get_valid_moves();
@@ -20,8 +22,12 @@ int runGame(SDL_Renderer **renderer)
     vector<pair<int, int>> clicks;
     bool move_made = false;
     bool game_over = false;
+    bool white = false; // Human = true, AI = false
+    bool black = false;
+    bool user;
     while (!quit)
     {
+        user = (game.whiteTurn && white) || (!game.whiteTurn && black);
         drawBoard(renderer);
         highlight_valid_squares(*renderer, valid_moves, square);
         drawPieces(renderer, &(game.board));
@@ -31,7 +37,7 @@ int runGame(SDL_Renderer **renderer)
             {
                 quit = true;
             }
-            else if (e.type == SDL_MOUSEBUTTONDOWN && !game_over)
+            else if (e.type == SDL_MOUSEBUTTONDOWN && !game_over && user)
             {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
@@ -96,9 +102,25 @@ int runGame(SDL_Renderer **renderer)
                     square = {-1, -1};
                     clicks.clear();
                     move_made = false;
+                    user = (game.whiteTurn && white) || (!game.whiteTurn && black);
                 }
             }
         }
+
+        if (!game_over && !user)
+        {
+            Move move = ai.random_move(valid_moves);
+            game.make_move(move, true);
+            if (move.promotion)
+            {
+                promotion = true;
+                promotion_square = move.end_file + DIMENSION * move.end_rank;
+            }
+            valid_moves = game.get_valid_moves();
+            move_made = true;
+            animation = true;
+        }
+
         if (move_made)
         {
             if (animation)
