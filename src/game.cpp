@@ -22,7 +22,7 @@ int runGame(SDL_Renderer **renderer)
     vector<pair<int, int>> clicks;
     bool move_made = false;
     bool game_over = false;
-    bool white = false; // Human = true, AI = false
+    bool white = true; // Human = true, AI = false
     bool black = false;
     bool user;
     while (!quit)
