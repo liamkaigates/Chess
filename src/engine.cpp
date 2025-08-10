@@ -1,13 +1,9 @@
-// Including necessary libraries
 #include <engine.h>
 
-// Using the standard namespace
-using namespace std;
-
 // Function to get all possible moves for all pieces on the board
-vector<Move> Game::get_all_moves()
+std::vector<Move> Game::get_all_moves()
 {
-    vector<Move> all_moves;
+    std::vector<Move> all_moves;
 
     // Iterate through all piece bitboards
     for (int i = 0; i < 12; ++i)
@@ -30,7 +26,7 @@ vector<Move> Game::get_all_moves()
             int j = square / DIMENSION;
             int k = square % DIMENSION;
 
-            vector<Move> piece_moves;
+            std::vector<Move> piece_moves;
 
             // Generate moves based on the type of piece
             switch (i % 6)
@@ -63,10 +59,10 @@ vector<Move> Game::get_all_moves()
     return all_moves;
 }
 
-void Game::promote_pawn(int square, string piece_type)
+void Game::promote_pawn(int square, std::string piece_type)
 {
     // Get the color of the pawn
-    string piece = "b" + piece_type;
+    std::string piece = "b" + piece_type;
     if (!this->whiteTurn)
     {
         piece = "w" + piece_type;
@@ -86,7 +82,7 @@ bool Game::square_under_attack(int target_square)
 {
     // Get all possible moves for the opponent
     this->whiteTurn = !this->whiteTurn;
-    vector<Move> opponent_moves = get_all_moves();
+    std::vector<Move> opponent_moves = get_all_moves();
     this->whiteTurn = !this->whiteTurn;
 
     // Check if the target square is present in the opponent's move set
@@ -115,14 +111,14 @@ bool Game::in_check()
 }
 
 // Function to get valid moves
-vector<Move> Game::get_valid_moves()
+std::vector<Move> Game::get_valid_moves()
 {
-    vector<Move> all_moves = get_all_moves();
-    vector<Move> valid_moves;
-    vector<int> temp_en_passant_pawns = this->en_passant_pawns;
-    vector<int> temp_castle_rights = this->castle_rights;
+    std::vector<Move> all_moves = get_all_moves();
+    std::vector<Move> valid_moves;
+    std::vector<int> temp_en_passant_pawns = this->en_passant_pawns;
+    std::vector<int> temp_castle_rights = this->castle_rights;
     // Add castle moves to all moves
-    vector<Move> castle_moves;
+    std::vector<Move> castle_moves;
     if (this->whiteTurn)
     {
         castle_moves = this->get_castle_moves(0, 4);
