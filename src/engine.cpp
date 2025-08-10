@@ -1,72 +1,68 @@
-// Including necessary libraries
 #include <engine.h>
 
-// Using the standard namespace
-using namespace std;
-
 // Function to get all possible moves for all pieces on the board
-vector<Move> Game::get_all_moves()
+std::vector<Move> Game::get_all_moves()
 {
-    vector<Move> all_moves;
+    std::vector<Move> all_moves;
 
-    // Iterate through all pieces on the board
+    // Iterate through all piece bitboards
     for (int i = 0; i < 12; ++i)
     {
+        // Skip pieces that do not belong to the side to move
+        if ((this->whiteTurn && (i > 5)) || (!this->whiteTurn && (i < 6)))
+        {
+            continue;
+        }
+
+        // Copy the bitboard so we can modify it while iterating
         U64 board = (this->board).boards[i];
 
-        // Iterate through each square on the board
-        for (int j = 0; j < DIMENSION; ++j)
+        // Iterate over all set bits in the bitboard
+        while (board)
         {
-            for (int k = 0; k < DIMENSION; ++k)
+            int square = get_LSB(board); // index of least significant bit
+            board &= (board - 1);        // clear the least significant bit
+
+            int j = square / DIMENSION;
+            int k = square % DIMENSION;
+
+            std::vector<Move> piece_moves;
+
+            // Generate moves based on the type of piece
+            switch (i % 6)
             {
-                // Check if the current square contains a piece
-                if (get_bit(board, (j * DIMENSION + k)) == 1)
-                {
-                    string piece = (this->board).piece_map[i];
-
-                    // Generate moves based on the type of piece and the current turn
-                    vector<Move> piece_moves;
-
-                    if ((this->whiteTurn && i >= 0 && i <= 5) || (!this->whiteTurn && i >= 6 && i <= 11))
-                    {
-                        // Handle the case when the piece is a pawn, rook, knight, bishop, queen, or king
-                        switch (i % 6)
-                        {
-                        case 0: // Pawn
-                            piece_moves = this->get_pawn_moves(j, k);
-                            break;
-                        case 1: // Knight
-                            piece_moves = this->get_knight_moves(j, k);
-                            break;
-                        case 2: // Bishop
-                            piece_moves = this->get_bishop_moves(j, k);
-                            break;
-                        case 3: // Rook
-                            piece_moves = this->get_rook_moves(j, k);
-                            break;
-                        case 4: // Queen
-                            piece_moves = this->get_queen_moves(j, k);
-                            break;
-                        case 5: // King
-                            piece_moves = this->get_king_moves(j, k);
-                            break;
-                        }
-                    }
-
-                    // Append the generated moves to the list of all moves
-                    all_moves.insert(all_moves.end(), piece_moves.begin(), piece_moves.end());
-                }
+            case 0: // Pawn
+                piece_moves = this->get_pawn_moves(j, k);
+                break;
+            case 1: // Knight
+                piece_moves = this->get_knight_moves(j, k);
+                break;
+            case 2: // Bishop
+                piece_moves = this->get_bishop_moves(j, k);
+                break;
+            case 3: // Rook
+                piece_moves = this->get_rook_moves(j, k);
+                break;
+            case 4: // Queen
+                piece_moves = this->get_queen_moves(j, k);
+                break;
+            case 5: // King
+                piece_moves = this->get_king_moves(j, k);
+                break;
             }
+
+            // Append the generated moves to the list of all moves
+            all_moves.insert(all_moves.end(), piece_moves.begin(), piece_moves.end());
         }
     }
 
     return all_moves;
 }
 
-void Game::promote_pawn(int square, string piece_type)
+void Game::promote_pawn(int square, std::string piece_type)
 {
     // Get the color of the pawn
-    string piece = "b" + piece_type;
+    std::string piece = "b" + piece_type;
     if (!this->whiteTurn)
     {
         piece = "w" + piece_type;
@@ -86,7 +82,7 @@ bool Game::square_under_attack(int target_square)
 {
     // Get all possible moves for the opponent
     this->whiteTurn = !this->whiteTurn;
-    vector<Move> opponent_moves = get_all_moves();
+    std::vector<Move> opponent_moves = get_all_moves();
     this->whiteTurn = !this->whiteTurn;
 
     // Check if the target square is present in the opponent's move set
@@ -115,14 +111,14 @@ bool Game::in_check()
 }
 
 // Function to get valid moves
-vector<Move> Game::get_valid_moves()
+std::vector<Move> Game::get_valid_moves()
 {
-    vector<Move> all_moves = get_all_moves();
-    vector<Move> valid_moves;
-    vector<int> temp_en_passant_pawns = this->en_passant_pawns;
-    vector<int> temp_castle_rights = this->castle_rights;
+    std::vector<Move> all_moves = get_all_moves();
+    std::vector<Move> valid_moves;
+    std::vector<int> temp_en_passant_pawns = this->en_passant_pawns;
+    std::vector<int> temp_castle_rights = this->castle_rights;
     // Add castle moves to all moves
-    vector<Move> castle_moves;
+    std::vector<Move> castle_moves;
     if (this->whiteTurn)
     {
         castle_moves = this->get_castle_moves(0, 4);

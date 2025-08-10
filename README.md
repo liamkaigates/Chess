@@ -1,60 +1,71 @@
-# Project Name
+# Chess Engine
 
-Short project description and purpose.
+A C++ chess engine and simple graphical interface built with SDL2. The engine uses a bitboard representation and supports move generation, validation, and basic AI search.
 
 ## Table of Contents
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Structure](#structure)
+- [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Overview
-
-Briefly describe the project, its goals, and any key features. Include information on why the project exists and what problems it aims to solve.
+This project aims to provide a functional chess engine along with an SDL2-based user interface. Key features include:
+- Bitboard-based board representation for efficient move generation.
+- Move validation that prevents illegal moves and checks for checkmate/stalemate.
+- Optional AI player to play against the engine.
+- Unit tests built with GoogleTest to ensure engine correctness.
 
 ## Prerequisites
+Ensure the following dependencies are installed:
+- **g++** with C++20 support
+- **SDL2** and **SDL2_ttf** libraries
+- **make** build tool
+- **GoogleTest** (libgtest) for running tests
 
-List any dependencies or prerequisites needed to run the project. Include instructions on how to install them.
+On Debian/Ubuntu based systems you can install these with:
+```bash
+sudo apt-get update
+sudo apt-get install -y g++ make libsdl2-dev libsdl2-ttf-dev libgtest-dev
+```
 
 ## Installation
-
-Provide step-by-step instructions on how to install the project. Include any necessary configuration steps.
-
+Clone the repository and build the binaries:
 ```bash
-# Example installation commands
-git clone https://github.com/your-username/your-project.git
-cd your-project
+git clone <repository-url>
+cd Chess
 make
 ```
+This will build both the main application (`chess_app`) and the test suite (`chess_test`).
 
 ## Usage
-
-Explain how to use the project. Include examples, code snippets, or command-line instructions.
+Run the chess application:
 ```bash
-# Example usage commands
-./your_executable arg1 arg2
+./chess_app
 ```
 
-## Structure
+Run the unit tests:
+```bash
+# Some environments require XDG_RUNTIME_DIR to be set for SDL
+export XDG_RUNTIME_DIR=/tmp
+./chess_test
+```
 
-Explain the structure of your project. Describe the purpose of key directories and files.
+## Project Structure
+```
 /
-|-- src/              # Source code files
-|-- include/          # Header files
-|-- docs/             # Documentation
-|-- tests/            # Test files
-|-- CMakeLists.txt    # Build configuration file
-|-- README.md         # Project README
-/
-
+├── src/            # Source code for the engine and UI
+├── include/        # Header files
+├── test/           # GoogleTest unit tests
+├── piece_images/   # Image assets for the GUI
+├── Makefile        # Build configuration
+└── README.md       # Project documentation
+```
 
 ## Contributing
-
-Explain how other users can contribute to your project. Include information on how to submit issues and pull requests.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
-
-This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the [GNU GPL v3](LICENSE).
