@@ -4,9 +4,8 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <SDL2/SDL.h>
 
-using namespace std;
+struct SDL_Texture;
 
 typedef unsigned long long U64;
 
@@ -31,9 +30,9 @@ public:
     U64 *black_king;
 
     // Maps to associate piece names and bitboards
-    map<int, string> piece_map;
-    map<string, SDL_Texture *> image_map;
-    map<string, int> piece_index;
+    std::map<int, std::string> piece_map;
+    std::map<std::string, SDL_Texture *> image_map;
+    std::map<std::string, int> piece_index;
     // Function to get the bitboard for all white pieces
     U64 get_white_board();
 
