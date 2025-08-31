@@ -1,0 +1,20 @@
+# Build artifacts
+obj/
+*.o
+*.a
+*.so
+*.dylib
+
+# Binaries
+chess_app
+chess_test
+
+# OS/filesystem
+.DS_Store
+Thumbs.db
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.code-workspace
+

@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ make libsdl2-dev libsdl2-ttf-dev libgtest-dev cmake
+          # Build and install GoogleTest static libraries if not already available
+          sudo cmake -S /usr/src/googletest -B /usr/src/googletest/build
+          sudo cmake --build /usr/src/googletest/build -j2
+          sudo cp /usr/src/googletest/build/lib/*.a /usr/lib/
+
+      - name: Build
+        run: make -j2
+
+      - name: Run tests
+        run: |
+          export XDG_RUNTIME_DIR=/tmp
+          ./chess_test
+

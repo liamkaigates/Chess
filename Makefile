@@ -33,8 +33,20 @@ TDIR = test
 
 # Define the libraries
 LIBS = -lm
-LDIRS = -L/usr/local/Cellar/googletest/1.14.0/lib
-XXLIBS = $(LIBS) -lgtest -lgtest_main
+# GoogleTest library path (auto-detected when possible)
+LDIRS :=
+# Prefer Homebrew Cellar on macOS if present
+ifneq ($(wildcard /usr/local/Cellar/googletest/*/lib),)
+  GTEST_CELLAR:=$(lastword $(sort $(wildcard /usr/local/Cellar/googletest/*)))
+  LDIRS += -L$(GTEST_CELLAR)/lib
+endif
+ifneq ($(wildcard /opt/homebrew/Cellar/googletest/*/lib),)
+  GTEST_CELLAR:=$(lastword $(sort $(wildcard /opt/homebrew/Cellar/googletest/*)))
+  LDIRS += -L$(GTEST_CELLAR)/lib
+endif
+
+# Link libraries (include pthread for gtest)
+XXLIBS = $(LIBS) -lgtest -lgtest_main -pthread
 
 # Define the dependencies with their paths
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
