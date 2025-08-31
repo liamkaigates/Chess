@@ -23,14 +23,20 @@ int init(SDL_Window **window, SDL_Renderer **renderer)
         return -1;
     }
 
-    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
-
+    // Try to create a hardware-accelerated renderer first
+    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (*renderer == NULL)
     {
-        cout << "Error creating SDL Renderer: " << SDL_GetError() << endl;
-        SDL_DestroyWindow(*window);
-        SDL_Quit();
-        return -1;
+        // Fall back to software renderer (useful for headless CI with dummy video driver)
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
+        *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_SOFTWARE);
+        if (*renderer == NULL)
+        {
+            cout << "Error creating SDL Renderer: " << SDL_GetError() << endl;
+            SDL_DestroyWindow(*window);
+            SDL_Quit();
+            return -1;
+        }
     }
 
     return 0;
